@@ -32,7 +32,6 @@ var todos = [
 
 module.exports = {
     'GET /api/todos': async (ctx, next) => {
-        console.log(ctx.query, ctx.querystring, 11)
         ctx.rest({
             todos: todos
         });

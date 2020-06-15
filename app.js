@@ -27,6 +27,13 @@ app.use(async (ctx, next) => {
 let staticFiles = require('./static-files');
 app.use(staticFiles('/static/', __dirname + '/static'));
 
+app.use(async (ctx, next) => {
+    if (ctx.url === '/') {
+        return ctx.response.redirect('/static/index.html');
+    }
+    await next();
+})
+
 // parse request body:
 app.use(bodyParser());
 

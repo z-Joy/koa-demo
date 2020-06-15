@@ -6,9 +6,22 @@ const controller = require('./controller');
 
 const rest = require('./rest');
 
+const sequelize = require('./config');
+
 const app = new Koa();
 
 const isProduction = process.env.NODE_ENV === 'production';
+
+// var Task = sequelize.define('user', {
+//     id: {
+//         type: Sequelize.STRING(50),
+//         primaryKey: true
+//     },
+//     username: Sequelize.STRING(50),
+//     password: Sequelize.STRING(50),
+// }, {
+//     timestamps: false
+// });
 
 rest.registerRest(app);
 

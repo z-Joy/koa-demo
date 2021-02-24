@@ -72,5 +72,11 @@ module.exports = {
             code: 200,
             module: true
         });
-    }
+    },
+
+    'POST /api/webhook': async (ctx, next) => {
+        let t = ctx.request.body;
+        console.log(t);
+        ctx.rest({ code: 200, module: true });
+    },
 }

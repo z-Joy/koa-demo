@@ -76,7 +76,11 @@ module.exports = {
 
     'POST /api/webhook': async (ctx, next) => {
         let t = ctx.request.body;
-        console.log(t);
-        ctx.rest({ code: 200, module: true });
+        let todoRes = await Todo.create({
+            name: 'hooks: ' + Date.now(),
+            description: JSON.stringify(t),
+        });
+        todos.push(todoRes);
+        ctx.rest(todoRes);
     },
 }

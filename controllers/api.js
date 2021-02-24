@@ -78,7 +78,7 @@ module.exports = {
         let t = ctx.request.body;
         let todoRes = await Todo.create({
             name: 'hooks: ' + Date.now(),
-            description: JSON.stringify(t),
+            description: t.hook_id,
         });
         todos.push(todoRes);
         ctx.rest(todoRes);

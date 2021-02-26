@@ -84,17 +84,10 @@ module.exports = {
         if (req.ref.includes('heads/master')) {
             exec('bash ' + cwd + '/update.sh ' + cwd, function(err, stdout, stderr) {
                 console.log(stdout);
-                if (err) {
-                    ctx.rest({
-                        code: 200,
-                        module: '重启失败'
-                    });
-                    return;
-                }
-                ctx.rest({
-                    code: 200,
-                    module: '成功'
-                });
+            });
+            ctx.rest({
+                code: 200,
+                module: '成功'
             });
         } else {
             ctx.rest({

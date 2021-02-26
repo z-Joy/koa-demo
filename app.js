@@ -10,9 +10,9 @@ const sequelize = require('./config');
 
 const app = new Koa();
 
-const isProduction = process.env.NODE_ENV === 'production';
+const isDev = process.env.NODE_ENV === 'dev';
 
-const port = isProduction ? 3000 : 3003;
+const port = isDev ? 3003 : 3000;
 
 // var Task = sequelize.define('user', {
 //     id: {

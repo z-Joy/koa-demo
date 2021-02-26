@@ -4,6 +4,7 @@
     "description": "todo 2 example with vue",
     "main": "app.js",
     "scripts": {
+        "dev": "NODE_ENV=dev node --use_strict app.js",
         "start": "node --use_strict app.js"
     },
     "keywords": [

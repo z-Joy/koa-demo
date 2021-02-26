@@ -1,5 +1,9 @@
 const APIError = require('../rest').APIError;
 
+const cwd = process.cwd();
+
+const { exec } = require('child_process');
+
 var gid = 0;
 
 function nextId() {
@@ -74,13 +78,20 @@ module.exports = {
         });
     },
 
-    'POST /api/webhook': async (ctx, next) => {
-        let t = ctx.request.body;
-        let todoRes = await Todo.create({
-            name: 'hooks: ' + Date.now(),
-            description: t.hook_id,
+    'POST /api/hook': async (ctx, next) => {
+        exec('bash ' + cwd + '/update.sh ' + cwd, function(err, stdout, stderr) {
+            console.log(stdout);
         });
-        todos.push(todoRes);
-        ctx.rest(todoRes);
+        ctx.rest({
+            code: 200,
+            module: true
+        });
+    },
+
+    'POST /api/webhook': async (ctx, next) => {
+        ctx.rest({
+            code: 200,
+            module: true
+        });
     },
 }

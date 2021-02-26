@@ -79,6 +79,7 @@ module.exports = {
     },
 
     'POST /api/hook': async (ctx, next) => {
+        // 重启本项目
         const req = ctx.request.body;
         if (req.ref.includes('heads/master')) {
             exec('bash ' + cwd + '/update.sh ' + cwd, function(err, stdout, stderr) {

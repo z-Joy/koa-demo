@@ -12,6 +12,8 @@ const app = new Koa();
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+const port = isProduction ? 3000 : 3003;
+
 // var Task = sequelize.define('user', {
 //     id: {
 //         type: Sequelize.STRING(50),
@@ -56,5 +58,5 @@ app.use(rest.restify());
 // add controllers:
 app.use(controller());
 
-app.listen(3000);
-console.log('app started at http://localhost:3000');
+app.listen(port);
+console.log('app started at http://localhost:' + port);

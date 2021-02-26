@@ -1,6 +1,8 @@
 
 const fs = require('fs');
 
+const hookMiddleware = require('./middleware/hook');
+
 // add url-route in /controllers:
 
 function addMapping(router, mapping) {
@@ -11,7 +13,7 @@ function addMapping(router, mapping) {
             console.log(`register URL mapping: GET ${path}`);
         } else if (url.startsWith('POST ')) {
             var path = url.substring(5);
-            router.post(path, mapping[url]);
+            router.post(path, hookMiddleware, mapping[url]);
             console.log(`register URL mapping: POST ${path}`);
         } else if (url.startsWith('PUT ')) {
             var path = url.substring(4);

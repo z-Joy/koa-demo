@@ -80,27 +80,22 @@ module.exports = {
 
     'POST /api/hook': async (ctx, next) => {
         // 重启本项目..
-        const req = ctx.request.body;
-        if (req.ref.includes('heads/master')) {
-            exec('bash ' + cwd + '/update.sh ' + cwd, function(err, stdout, stderr) {
-                console.log(stdout);
-            });
-            ctx.rest({
-                code: 200,
-                module: '成功'
-            });
-        } else {
-            ctx.rest({
-                code: 200,
-                module: '忽略'
-            });
-        }
-    },
-
-    'POST /api/webhook': async (ctx, next) => {
+        exec('bash ' + cwd + '/shell/update.sh ' + cwd, function(err, stdout, stderr) {
+            console.log(stdout);
+        });
         ctx.rest({
             code: 200,
-            module: true
+            module: '成功'
+        });
+    },
+
+    'POST /api/bloghook': async (ctx, next) => {
+        exec('bash ' + cwd + '/shell/blog.sh', function(err, stdout, stderr) {
+            console.log(stdout);
+        });
+        ctx.rest({
+            code: 200,
+            module: '成功'
         });
     },
 }

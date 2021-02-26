@@ -96,12 +96,12 @@ module.exports = {
                     module: '成功'
                 });
             });
-            return;
+        } else {
+            ctx.rest({
+                code: 200,
+                module: '忽略'
+            });
         }
-        ctx.rest({
-            code: 200,
-            module: '忽略'
-        });
     },
 
     'POST /api/webhook': async (ctx, next) => {

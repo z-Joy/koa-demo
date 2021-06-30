@@ -28,7 +28,7 @@ var todos = [];
 
 module.exports = {
     'GET /api/todos': async (ctx, next) => {
-
+        logHandle('this is list');
         let todos = await Todo.findAll({
             where: {
                 userId: '1'
@@ -111,30 +111,38 @@ module.exports = {
 
     'POST /api/dingtest': async (ctx, next) => {
 
-        const { signature, timestamp, nonce } = ctx.query;
-        const { encrypt } = ctx.request.body;
-        /** 加解密需要，可以随机填写。如 "12345" */
-        const TOKEN = '666666';
-        /** 加密密钥，用于回调数据的加密，固定为43个字符，从[a-z, A-Z, 0-9]共62个字符中随机生成*/
-        const ENCODING_AES_KEY = 'TXpRMU5qYzRPVEF4TWpNME5UWTNPRGt3TVRJek5EVTI';
-        // const ENCODING_AES_KEY = utils.getRandomStr(43);
-        /** 企业corpid, 可以在钉钉企业管理后台查看（https://oa.dingtalk.com/） */
-        const CORP_ID = appSecret;
-        /** 实例化加密类 */
-        console.log('\nEncryptor Test:');
-        const encryptor = new DingTalkEncryptor(TOKEN, ENCODING_AES_KEY, CORP_ID);
+        logHandle('this is abccccc');
 
-        // 解密钉钉回调数据 
-        // const plainText = encryptor.getDecryptMsg(signature, timestamp, nonce, encrypt);
-        // console.log('DEBUG plainText: ' + plainText);
-        // const obj = JSON.parse(plainText);
-        // 回调事件类型，根据事件类型和业务数据处理相应业务
-        // const eventType = obj.EventType;
+        try {
+            const { signature, timestamp, nonce } = ctx.query;
+            const { encrypt } = ctx.request.body;
+            /** 加解密需要，可以随机填写。如 "12345" */
+            const TOKEN = '666666';
+            /** 加密密钥，用于回调数据的加密，固定为43个字符，从[a-z, A-Z, 0-9]共62个字符中随机生成*/
+            const ENCODING_AES_KEY = 'TXpRMU5qYzRPVEF4TWpNME5UWTNPRGt3TVRJek5EVTI';
+            // const ENCODING_AES_KEY = utils.getRandomStr(43);
+            /** 企业corpid, 可以在钉钉企业管理后台查看（https://oa.dingtalk.com/） */
+            const CORP_ID = appSecret;
+            /** 实例化加密类 */
+            console.log('\nEncryptor Test:');
+            const encryptor = new DingTalkEncryptor(TOKEN, ENCODING_AES_KEY, CORP_ID);
+    
+            // 解密钉钉回调数据 
+            // const plainText = encryptor.getDecryptMsg(signature, timestamp, nonce, encrypt);
+            // console.log('DEBUG plainText: ' + plainText);
+            // const obj = JSON.parse(plainText);
+            // 回调事件类型，根据事件类型和业务数据处理相应业务
+            // const eventType = obj.EventType;
+    
+            // 响应数据：加密'success'，签名等等
+            const res = encryptor.getEncryptedMap('success', timestamp.slice(0, -3), nonce);
+            const resStr = JSON.stringify(res);
+            logHandle(resStr);
+            ctx.rest(resStr);
+        } catch (error) {
+            logHandle('err: ' + error);
+            logHandle('this is err');
+        }
 
-        // 响应数据：加密'success'，签名等等
-        const res = encryptor.getEncryptedMap('success', timestamp.slice(0, -3), nonce);
-        const resStr = JSON.stringify(res);
-        logHandle(resStr);
-        ctx.rest(resStr);
     },
 }

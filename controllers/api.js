@@ -13,7 +13,8 @@ const utils = require('dingtalk-encrypt/Utils');
 var gid = 0;
 
 // const appSecret = 'BGIrPS3TYGFu-bivXnuAENN2rBhSuuMf-cTteFfLRzTIaeKqXFglbnBfH3zoK9Ce'
-const appSecret = 'dingql1n4ibvcx6qpeon';
+// const appSecret = 'dingql1n4ibvcx6qpeon';
+const appSecret = 'dingfcaaf41f6d550a24acaaa37764f94726';
 
 function nextId() {
     gid ++;
@@ -119,8 +120,8 @@ module.exports = {
             /** 加解密需要，可以随机填写。如 "12345" */
             const TOKEN = '666666';
             /** 加密密钥，用于回调数据的加密，固定为43个字符，从[a-z, A-Z, 0-9]共62个字符中随机生成*/
-            // const ENCODING_AES_KEY = 'TXpRMU5qYzRPVEF4TWpNME5UWTNPRGt3TVRJek5EVTI';
-            const ENCODING_AES_KEY = utils.getRandomStr(43);
+            const ENCODING_AES_KEY = 'TXpRMU5qYzRPVEF4TWpNME5UWTNPRGt3TVRJek5EVTI';
+            // const ENCODING_AES_KEY = utils.getRandomStr(43);
             /** 企业corpid, 可以在钉钉企业管理后台查看（https://oa.dingtalk.com/） */
             const CORP_ID = appSecret;
             /** 实例化加密类 */

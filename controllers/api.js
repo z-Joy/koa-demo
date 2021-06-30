@@ -163,7 +163,7 @@ module.exports = {
             encrypt
         }
         console.log('返回给钉钉的响应是：',resp)
-        res.rest(resp)
+        ctx.rest(JSON.stringify(resp));
     
         //下面是解密钉钉推送来的消息
         const msgFromDing = aesDecrypt(req.body.encrypt)

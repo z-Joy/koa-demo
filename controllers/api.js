@@ -164,9 +164,9 @@ module.exports = {
         // const msg_signature = signMsg(timeStamp,nonce,encrypt,token)
         const resp = {
             msg_signature: 'c4b5c86bd577da3d93fea7c89cba61c78b48e589',
-            timeStamp: '1625056196',
+            timeStamp: '1625056732',
             nonce: 'aaaaaa',
-            encrypt: 'd04rK8PIBI6vmiAruLye1BTJQtRxlM05QIBq8CQh'
+            encrypt: 'd04rK8PIBI6vmiAruLye1BTJQtRxlM05QIBq8CQh+YCKWnOHEUd+X9tqhPWW7fmt'
         }
         console.log('返回给钉钉的响应是：',resp)
         ctx.rest(JSON.stringify(resp));

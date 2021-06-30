@@ -8,8 +8,8 @@ const crypto = require('crypto');
 
 var gid = 0;
 
-// const appSecret = 'BGIrPS3TYGFu-bivXnuAENN2rBhSuuMf-cTteFfLRzTIaeKqXFglbnBfH3zoK9Ce'
-const appSecret = 'dingql1n4ibvcx6qpeon'
+const appSecret = 'BGIrPS3TYGFu-bivXnuAENN2rBhSuuMf-cTteFfLRzTIaeKqXFglbnBfH3zoK9Ce'
+// const appSecret = 'dingql1n4ibvcx6qpeon'
 
 function nextId() {
     gid ++;

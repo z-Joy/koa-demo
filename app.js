@@ -45,9 +45,11 @@ app.use(async (ctx, next) => {
 
 // static file support:
 let staticFiles = require('./static-files');
+const { logHandle } = require('./log.js');
 app.use(staticFiles('/static/', __dirname + '/static'));
 
 app.use(async (ctx, next) => {
+    logHandle('url: ' + ctx.url);
     if (ctx.url === '/') {
         return ctx.response.redirect('/static/index.html');
     }

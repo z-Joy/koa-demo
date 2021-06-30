@@ -130,7 +130,7 @@ module.exports = {
         // const eventType = obj.EventType;
 
         // 响应数据：加密'success'，签名等等
-        const res = encryptor.getEncryptedMap('success', timestamp, nonce);
+        const res = encryptor.getEncryptedMap('success', timestamp.slice(0, -3), nonce);
         ctx.rest(JSON.stringify(res));
 
     },

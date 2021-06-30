@@ -29,7 +29,6 @@ var todos = [];
 
 module.exports = {
     'GET /api/todos': async (ctx, next) => {
-        logHandle('this is list');
         let todos = await Todo.findAll({
             where: {
                 userId: '1'
@@ -112,7 +111,6 @@ module.exports = {
 
     'POST /api/dingtest': async (ctx, next) => {
 
-        logHandle('this is abccccc');
 
         try {
             const { signature, timestamp, nonce } = ctx.query;
@@ -136,13 +134,12 @@ module.exports = {
             // const eventType = obj.EventType;
     
             // 响应数据：加密'success'，签名等等
-            const res = encryptor.getEncryptedMap('success', timestamp, nonce);
+            const res = encryptor.getEncryptedMap('success', timestamp.slice(0, 10), nonce);
             const resStr = JSON.stringify(res);
             logHandle(resStr);
             console.log(resStr, 'resStr');
             ctx.rest(resStr);
         } catch (error) {
-            console.log(error, 111);
             logHandle('err: ' + error);
             logHandle('this is err');
         }

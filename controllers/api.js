@@ -98,4 +98,13 @@ module.exports = {
             module: '成功'
         });
     },
+
+    'POST /api/dingtest': async (ctx, next) => {
+        console.log(ctx.query, 'request-query');
+        console.log(ctx.request.body, 'request-body');
+        ctx.rest({
+            code: 200,
+            module: '成功'
+        });
+    },
 }

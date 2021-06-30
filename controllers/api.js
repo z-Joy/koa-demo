@@ -13,19 +13,19 @@ function nextId() {
     return 't' + gid;
 }
 
-// function makeEncrypt(corpId){
-//     const msg_len = Buffer.from([0,0,0,7])//success 长度为7,二进制为00000000 00000000 00000000 00000111
-//     const random = crypto.randomBytes(16)//16字节的随机字符，可以不是ascii
-//     const msg = Buffer.from('success','ascii')
-//     const corpid = Buffer.from(corpId,'ascii')
-//     const codeStringBuffer = Buffer.concat([random,msg_len,msg,corpid])
-//     const key = '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@'
-//     const iv = key.slice(0,16)
-//     const cipher = crypto.createCipheriv('aes-256-cbc',key,iv)
-//     let encrypted = cipher.update(codeStringBuffer,'binary','base64')
-//     encrypted += cipher.final('base64');
-//     return encrypted
-// }
+function makeEncrypt(corpId){
+    const msg_len = Buffer.from([0,0,0,7])//success 长度为7,二进制为00000000 00000000 00000000 00000111
+    const random = crypto.randomBytes(16)//16字节的随机字符，可以不是ascii
+    const msg = Buffer.from('success','ascii')
+    const corpid = Buffer.from(corpId,'ascii')
+    const codeStringBuffer = Buffer.concat([random,msg_len,msg,corpid])
+    const key = 'UCoRKfN6MRrBgizb2bAUU5UMdhDTnIio7dF6b6dbItx'
+    const iv = key.slice(0,16)
+    const cipher = crypto.createCipheriv('aes-256-cbc',key,iv)
+    let encrypted = cipher.update(codeStringBuffer,'binary','base64')
+    encrypted += cipher.final('base64');
+    return encrypted
+}
 
 /**
  * 
@@ -34,18 +34,18 @@ function nextId() {
  * @param {*} encrypt 新随机字符串+二进制（0007）+ success + CorpId 然后用aes-256-cbc加密，再转为Base64字符串
  * @param {*} token 注册回调接口时设定的自定义token
  */
-// function signMsg(timeStamp,nonce,encrypt,token){
-//     let sortList = [timeStamp,nonce,encrypt,token];
-//     sortList.sort();
-//     let msg_signature = '';
-//     for (let text of  sortList){
-//         msg_signature += text;
-//     }
-//     const hash = crypto.createHash('sha1')
-//     hash.update(msg_signature)
-//     msg_signature = hash.digest('hex')
-//     return msg_signature
-// }
+function signMsg(timeStamp,nonce,encrypt,token){
+    let sortList = [timeStamp,nonce,encrypt,token];
+    sortList.sort();
+    let msg_signature = '';
+    for (let text of  sortList){
+        msg_signature += text;
+    }
+    const hash = crypto.createHash('sha1')
+    hash.update(msg_signature)
+    msg_signature = hash.digest('hex')
+    return msg_signature
+}
 
 function aesDecrypt(encrypted) {
     const key = 'UCoRKfN6MRrBgizb2bAUU5UMdhDTnIio7dF6b6dbItx'
@@ -148,25 +148,28 @@ module.exports = {
 
     'POST /api/dingtest': async (ctx, next) => {
 
-        const { timestamp, nonce, msg_signature } = ctx.query;
-        const { encrypt } = ctx.request.body;
+        // const { timestamp, nonce, msg_signature } = ctx.query;
+        // const { encrypt } = ctx.request.body;
         
-        //下面是返回给钉钉success
-        // const encrypt = makeEncrypt('dingfcaaf41f6d550a24acaaa37764f94726')
-        // const timeStamp = "" + parseInt(timestamp / 1000);
-        // const token = 'svEkzca';
-        // const msg_signature = signMsg(timeStamp,nonce,encrypt,token)
+         //下面是返回给钉钉success
+        const encrypt = makeEncrypt('dingfcaaf41f6d550a24acaaa37764f94726')
+        const timeStamp = "" + parseInt(new Date()/1000);
+        const charCollection = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        let nonce = '' //随机字符串，不限制长度，但是不能出现中文
+        for(let i=0;i<10;i++){nonce += charCollection[Math.round(Math.random()*(charCollection.length-1))]}
+        const token = 'svEkzca' //该字符串也不能出现中文，是钉钉注册回调接口时传给钉钉端的token字段
+        const msg_signature = signMsg(timeStamp,nonce,encrypt,token)
         const resp = {
             msg_signature,
-            timestamp,
+            timeStamp,
             nonce,
             encrypt
         }
         console.log('返回给钉钉的响应是：',resp)
-        ctx.rest(JSON.stringify(resp));
+        ctx.rest(resp);
     
         //下面是解密钉钉推送来的消息
-        const msgFromDing = aesDecrypt(req.body.encrypt)
+        const msgFromDing = aesDecrypt(ctx.request.body.encrypt)
         console.log('钉钉发来的消息是：'+msgFromDing)
     },
 }

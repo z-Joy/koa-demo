@@ -5,7 +5,7 @@ module.exports = {
     },
     registerRest: (app) => {
         app.context.rest = function(data) {
-            this.response.type = 'application/json';
+            // this.response.type = 'application/json';
             this.response.body = data;
         }
     },

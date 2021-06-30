@@ -8,6 +8,9 @@ const crypto = require('crypto');
 
 var gid = 0;
 
+// const appSecret = 'BGIrPS3TYGFu-bivXnuAENN2rBhSuuMf-cTteFfLRzTIaeKqXFglbnBfH3zoK9Ce'
+const appSecret = 'dingql1n4ibvcx6qpeon'
+
 function nextId() {
     gid ++;
     return 't' + gid;
@@ -19,7 +22,7 @@ function makeEncrypt(corpId){
     const msg = Buffer.from('success','ascii')
     const corpid = Buffer.from(corpId,'ascii')
     const codeStringBuffer = Buffer.concat([random,msg_len,msg,corpid])
-    const key = 'UCoRKfN6MRrBgizb2bAUU5UMdhDTnIio7dF6b6dbItx'
+    const key = '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@';
     const iv = key.slice(0,16)
     const cipher = crypto.createCipheriv('aes-256-cbc',key,iv)
     let encrypted = cipher.update(codeStringBuffer,'binary','base64')
@@ -48,7 +51,7 @@ function signMsg(timeStamp,nonce,encrypt,token){
 }
 
 function aesDecrypt(encrypted) {
-    const key = 'UCoRKfN6MRrBgizb2bAUU5UMdhDTnIio7dF6b6dbItx'
+    const key = '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@';
     const iv = key.slice(0,16)
     const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
     decipher.setAutoPadding(false)//如果不加这个在解密钉钉加密信息的时候final()容易出错
@@ -152,7 +155,7 @@ module.exports = {
         // const { encrypt } = ctx.request.body;
         
          //下面是返回给钉钉success
-        const encrypt = makeEncrypt('dingfcaaf41f6d550a24acaaa37764f94726')
+        const encrypt = makeEncrypt(appSecret)
         const timeStamp = "" + parseInt(new Date()/1000);
         const charCollection = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
         let nonce = '' //随机字符串，不限制长度，但是不能出现中文
@@ -166,7 +169,7 @@ module.exports = {
             encrypt
         }
         console.log('返回给钉钉的响应是：',resp)
-        ctx.rest(resp);
+        ctx.rest(JSON.stringify(resp));
     
         //下面是解密钉钉推送来的消息
         const msgFromDing = aesDecrypt(ctx.request.body.encrypt)

@@ -155,18 +155,18 @@ module.exports = {
         // const { encrypt } = ctx.request.body;
         
          //下面是返回给钉钉success
-        const encrypt = makeEncrypt(appSecret)
-        const timeStamp = "" + parseInt(new Date()/1000);
-        const charCollection = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-        let nonce = '' //随机字符串，不限制长度，但是不能出现中文
-        for(let i=0;i<10;i++){nonce += charCollection[Math.round(Math.random()*(charCollection.length-1))]}
-        const token = 'svEkzca' //该字符串也不能出现中文，是钉钉注册回调接口时传给钉钉端的token字段
-        const msg_signature = signMsg(timeStamp,nonce,encrypt,token)
+        // const encrypt = makeEncrypt(appSecret)
+        // const timeStamp = "" + parseInt(new Date()/1000);
+        // const charCollection = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+        // let nonce = '' //随机字符串，不限制长度，但是不能出现中文
+        // for(let i=0;i<10;i++){nonce += charCollection[Math.round(Math.random()*(charCollection.length-1))]}
+        // const token = 'svEkzca' //该字符串也不能出现中文，是钉钉注册回调接口时传给钉钉端的token字段
+        // const msg_signature = signMsg(timeStamp,nonce,encrypt,token)
         const resp = {
-            msg_signature,
-            timeStamp,
-            nonce,
-            encrypt
+            msg_signature: 'c4b5c86bd577da3d93fea7c89cba61c78b48e589',
+            timeStamp: '1625056196',
+            nonce: 'aaaaaa',
+            encrypt: 'd04rK8PIBI6vmiAruLye1BTJQtRxlM05QIBq8CQh'
         }
         console.log('返回给钉钉的响应是：',resp)
         ctx.rest(JSON.stringify(resp));

@@ -14,6 +14,7 @@ const isDev = process.env.NODE_ENV === 'dev';
 
 const port = isDev ? 3003 : 3000;
 
+
 // var Task = sequelize.define('user', {
 //     id: {
 //         type: Sequelize.STRING(50),
@@ -27,6 +28,9 @@ const port = isDev ? 3003 : 3000;
 
 rest.registerRest(app);
 
+
+const logsUtil = require('./log.js');
+
 // log request URL:
 app.use(async (ctx, next) => {
     console.log(`Process ${ctx.request.method} ${ctx.request.url}...`);
@@ -35,6 +39,7 @@ app.use(async (ctx, next) => {
         execTime;
     await next();
     execTime = new Date().getTime() - start;
+    logsUtil.logResponse(ctx, execTime);	  //记录响应日志
     ctx.response.set('X-Response-Time', `${execTime}ms`);
 });
 

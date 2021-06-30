@@ -3,6 +3,7 @@ const APIError = require('../rest').APIError;
 const cwd = process.cwd();
 
 const { exec } = require('child_process');
+const logHandle = require('../log').logHandle;
 
 // 参考：钉钉开发文档-业务事件回调 
 const DingTalkEncryptor = require('dingtalk-encrypt');
@@ -27,6 +28,7 @@ var todos = [];
 
 module.exports = {
     'GET /api/todos': async (ctx, next) => {
+
         let todos = await Todo.findAll({
             where: {
                 userId: '1'
@@ -131,7 +133,8 @@ module.exports = {
 
         // 响应数据：加密'success'，签名等等
         const res = encryptor.getEncryptedMap('success', timestamp.slice(0, -3), nonce);
-        ctx.rest(JSON.stringify(res));
-
+        const resStr = JSON.stringify(res);
+        logHandle(resStr);
+        ctx.rest(resStr);
     },
 }

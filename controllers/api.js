@@ -4,61 +4,19 @@ const cwd = process.cwd();
 
 const { exec } = require('child_process');
 
-const crypto = require('crypto');
+// 参考：钉钉开发文档-业务事件回调 
+const DingTalkEncryptor = require('dingtalk-encrypt');
+const utils = require('dingtalk-encrypt/Utils');
+
 
 var gid = 0;
 
 // const appSecret = 'BGIrPS3TYGFu-bivXnuAENN2rBhSuuMf-cTteFfLRzTIaeKqXFglbnBfH3zoK9Ce'
-const appSecret = 'dingql1n4ibvcx6qpeon'
+const appSecret = 'dingql1n4ibvcx6qpeon';
 
 function nextId() {
     gid ++;
     return 't' + gid;
-}
-
-function makeEncrypt(corpId){
-    const msg_len = Buffer.from([0,0,0,7])//success 长度为7,二进制为00000000 00000000 00000000 00000111
-    const random = crypto.randomBytes(16)//16字节的随机字符，可以不是ascii
-    const msg = Buffer.from('success','ascii')
-    const corpid = Buffer.from(corpId,'ascii')
-    const codeStringBuffer = Buffer.concat([random,msg_len,msg,corpid])
-    const key = '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@';
-    const iv = key.slice(0,16)
-    const cipher = crypto.createCipheriv('aes-256-cbc',key,iv)
-    let encrypted = cipher.update(codeStringBuffer,'binary','base64')
-    encrypted += cipher.final('base64');
-    return encrypted
-}
-
-/**
- * 
- * @param {*} timeStamp 当前10位的时间戳
- * @param {*} nonce 随机字符串，长度不限
- * @param {*} encrypt 新随机字符串+二进制（0007）+ success + CorpId 然后用aes-256-cbc加密，再转为Base64字符串
- * @param {*} token 注册回调接口时设定的自定义token
- */
-function signMsg(timeStamp,nonce,encrypt,token){
-    let sortList = [timeStamp,nonce,encrypt,token];
-    sortList.sort();
-    let msg_signature = '';
-    for (let text of  sortList){
-        msg_signature += text;
-    }
-    const hash = crypto.createHash('sha1')
-    hash.update(msg_signature)
-    msg_signature = hash.digest('hex')
-    return msg_signature
-}
-
-function aesDecrypt(encrypted) {
-    const key = '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@';
-    const iv = key.slice(0,16)
-    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
-    decipher.setAutoPadding(false)//如果不加这个在解密钉钉加密信息的时候final()容易出错
-    let decrypted= decipher.update(encrypted, 'base64')
-    decrypted= Buffer.concat([decrypted,decipher.final()])
-    const content_length = decrypted.slice(16,20).readInt32BE()//正文的长度，是4个字节的整数
-	return decrypted.slice(20,20+content_length).toString('utf-8')//通过指定长度提取出json
 }
 
 const model = require('../model');
@@ -151,28 +109,29 @@ module.exports = {
 
     'POST /api/dingtest': async (ctx, next) => {
 
-        // const { timestamp, nonce, msg_signature } = ctx.query;
-        // const { encrypt } = ctx.request.body;
-        
-         //下面是返回给钉钉success
-        // const encrypt = makeEncrypt(appSecret)
-        // const timeStamp = "" + parseInt(new Date()/1000);
-        // const charCollection = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-        // let nonce = '' //随机字符串，不限制长度，但是不能出现中文
-        // for(let i=0;i<10;i++){nonce += charCollection[Math.round(Math.random()*(charCollection.length-1))]}
-        // const token = 'svEkzca' //该字符串也不能出现中文，是钉钉注册回调接口时传给钉钉端的token字段
-        // const msg_signature = signMsg(timeStamp,nonce,encrypt,token)
-        const resp = {
-            msg_signature: 'c4b5c86bd577da3d93fea7c89cba61c78b48e589',
-            timeStamp: '1625056732',
-            nonce: 'aaaaaa',
-            encrypt: 'd04rK8PIBI6vmiAruLye1BTJQtRxlM05QIBq8CQh+YCKWnOHEUd+X9tqhPWW7fmt'
-        }
-        console.log('返回给钉钉的响应是：',resp)
-        ctx.rest(JSON.stringify(resp));
-    
-        //下面是解密钉钉推送来的消息
-        const msgFromDing = aesDecrypt(ctx.request.body.encrypt)
-        console.log('钉钉发来的消息是：'+msgFromDing)
+        const { signature, timestamp, nonce } = ctx.query;
+        const { encrypt } = ctx.request.body;
+        /** 加解密需要，可以随机填写。如 "12345" */
+        const TOKEN = '666666';
+        /** 加密密钥，用于回调数据的加密，固定为43个字符，从[a-z, A-Z, 0-9]共62个字符中随机生成*/
+        const ENCODING_AES_KEY = 'TXpRMU5qYzRPVEF4TWpNME5UWTNPRGt3TVRJek5EVTI';
+        // const ENCODING_AES_KEY = utils.getRandomStr(43);
+        /** 企业corpid, 可以在钉钉企业管理后台查看（https://oa.dingtalk.com/） */
+        const CORP_ID = appSecret;
+        /** 实例化加密类 */
+        console.log('\nEncryptor Test:');
+        const encryptor = new DingTalkEncryptor(TOKEN, ENCODING_AES_KEY, CORP_ID);
+
+        // 解密钉钉回调数据 
+        // const plainText = encryptor.getDecryptMsg(signature, timestamp, nonce, encrypt);
+        // console.log('DEBUG plainText: ' + plainText);
+        // const obj = JSON.parse(plainText);
+        // 回调事件类型，根据事件类型和业务数据处理相应业务
+        // const eventType = obj.EventType;
+
+        // 响应数据：加密'success'，签名等等
+        const res = encryptor.getEncryptedMap('success', timestamp, nonce);
+        ctx.rest(JSON.stringify(res));
+
     },
 }

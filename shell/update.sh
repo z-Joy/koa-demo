@@ -9,5 +9,7 @@ echo current branch is $git_branch
 # 获取最新
 git pull
 
+yarn install
+
 # 切换回原来分支
 pm2 restart app

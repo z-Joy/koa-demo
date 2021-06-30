@@ -127,11 +127,14 @@ module.exports = {
             const encryptor = new DingTalkEncryptor(TOKEN, ENCODING_AES_KEY, CORP_ID);
     
             // 解密钉钉回调数据 
-            // const plainText = encryptor.getDecryptMsg(signature, timestamp, nonce, encrypt);
-            // console.log('DEBUG plainText: ' + plainText);
-            // const obj = JSON.parse(plainText);
+            const plainText = encryptor.getDecryptMsg(signature, timestamp, nonce, encrypt);
+            console.log('DEBUG plainText: ' + plainText);
+            const obj = JSON.parse(plainText);
             // 回调事件类型，根据事件类型和业务数据处理相应业务
             // const eventType = obj.EventType;
+
+            logHandle('encrypt: ' + encrypt);
+            logHandle('plainText: ' + plainText);
     
             // 响应数据：加密'success'，签名等等
             const res = encryptor.getEncryptedMap('success', timestamp.slice(0, 10), nonce);

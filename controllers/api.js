@@ -13,8 +13,8 @@ const utils = require('dingtalk-encrypt/Utils');
 var gid = 0;
 
 // const appSecret = 'BGIrPS3TYGFu-bivXnuAENN2rBhSuuMf-cTteFfLRzTIaeKqXFglbnBfH3zoK9Ce'
-// const appSecret = 'dingql1n4ibvcx6qpeon';
-const appSecret = 'dingfcaaf41f6d550a24acaaa37764f94726';
+const appSecret = 'dingql1n4ibvcx6qpeon';
+// const appSecret = 'dingfcaaf41f6d550a24acaaa37764f94726';
 
 function nextId() {
     gid ++;
@@ -136,11 +136,13 @@ module.exports = {
             // const eventType = obj.EventType;
     
             // 响应数据：加密'success'，签名等等
-            const res = encryptor.getEncryptedMap('success', timestamp, utils.getRandomStr(8));
+            const res = encryptor.getEncryptedMap('success', timestamp, nonce);
             const resStr = JSON.stringify(res);
             logHandle(resStr);
+            console.log(resStr, 'resStr');
             ctx.rest(resStr);
         } catch (error) {
+            console.log(error, 111);
             logHandle('err: ' + error);
             logHandle('this is err');
         }

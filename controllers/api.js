@@ -4,6 +4,7 @@ const cwd = process.cwd();
 
 const { exec } = require('child_process');
 const logHandle = require('../log').logHandle;
+const crypto = require('crypto');
 
 // 参考：钉钉开发文档-业务事件回调 
 const DingTalkEncryptor = require('dingtalk-encrypt');
@@ -67,6 +68,7 @@ function getEncryptedMap(CORP_ID, timestamp, token, nonce) {
         nonce,
         encrypt
     }
+    return res;
 }
 
 function getDecryptMsg(encrypted) {
